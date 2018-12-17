@@ -37,11 +37,39 @@ const unsigned endAnd = 0x3FFFFFFF;
 
 #define func(a) [](State& state){ a; }
 #define efunc(a) func(return a;)
-#define arg(n) state.code[state.loc+2+n]
+#define numEfunc(a) func(return ((a) | beginAnd);)
+#define arg(n) (state.code[state.loc+2+n])
 #define numarg(n) (((arg(n) & beginAnd) ? arg(n) : state.vars[state.varsLoc+arg(n)]) | beginAnd)
 
 const std::vector<unsigned(*)(State&)> builtins { //TODO more of these
-  efunc((numarg(0)+numarg(1)) | beginAnd) //ADD
+  numEfunc(numarg(0)+numarg(1)), // +
+  numEfunc(numarg(0)-numarg(1)), // -
+  numEfunc(numarg(0)==numarg(1)), // ==
+  numEfunc(numarg(0)!=numarg(1)), // !=
+  numEfunc((int)numarg(0)>(int)numarg(1)), // >
+  numEfunc((int)numarg(0)<(int)numarg(1)), // <
+  numEfunc((int)numarg(0)>=(int)numarg(1)), // >=
+  numEfunc((int)numarg(0)<=(int)numarg(1)), // <=
+  numEfunc(numarg(0)>numarg(1)), // > u
+  numEfunc(numarg(0)<numarg(1)), // < u
+  numEfunc(numarg(0)>=numarg(1)), // >= u
+  numEfunc(numarg(0)<=numarg(1)), // <= u
+  numEfunc(numarg(0)>>numarg(1)), // >>
+  numEfunc(numarg(0)<<numarg(1)), // <<
+  efunc((unsigned)!numarg(0)), // !
+  numEfunc(numarg(0)&&numarg(1)), // &&
+  numEfunc(numarg(0)||numarg(1)), // ||
+  numEfunc(!(numarg(0)&&numarg(1))), // !&&
+  numEfunc(!(numarg(0)||numarg(1))), // !||
+  numEfunc((bool)numarg(0)!=(bool)numarg(1)), // xor
+  numEfunc((bool)numarg(0)==(bool)numarg(1)), // xnor
+  efunc(~numarg(0)), // b!
+  numEfunc(numarg(0)&numarg(1)), // b&&
+  numEfunc(numarg(0)|numarg(1)), // b||
+  numEfunc(~(numarg(0)&numarg(1))), // b!&&
+  numEfunc(~(numarg(0)|numarg(1))), // b!||
+  numEfunc(numarg(0)^numarg(1)), // bxor
+  numEfunc(~(numarg(0)^numarg(1))), // bxnor
 };
 
 const unsigned maxNumArgs = 8;
