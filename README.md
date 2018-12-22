@@ -1,8 +1,8 @@
 # uwe-asm
-a functional assembly language
+a functional assembly/machine language
 
 ## What it is
-uwe-asm is a purely functional assembly language; a chip can built that runs uwe-asm natively (eventually I might try to make one). It follows all the requirements for a purely functional language (isolated IO, partial execution, first class functions, etc.) using only a string of bytes.
+uwe-asm is a purely functional assembly/machine language; a chip can built that runs uwe-asm natively (eventually I might try to make one). It follows all the requirements for a purely functional language (isolated IO, partial execution, first class functions, etc.) using only a string of bytes.
 
 ## How it works
 uwe-asm code is a set of ints; they come in 4 types:
