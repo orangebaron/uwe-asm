@@ -19,6 +19,7 @@ struct State {
 	unsigned carry, loc, varsSize, varsLoc;
 	std::vector<unsigned> mainIO, vars, code;
 	std::vector<StackItem> stack;
+	std::vector<std::vector<unsigned>> lists;
 
 	State(std::vector<unsigned> code): code(code) {
 		inMainIO = false;
@@ -29,6 +30,7 @@ struct State {
 		mainIO = {};
 		vars = {};
 		stack = {{(unsigned)-1,0,0,0}};
+		lists = {};
 	}
 };
 
@@ -39,7 +41,10 @@ const unsigned endAnd = 0x3FFFFFFF;
 #define efunc(a) func(return a;)
 #define numEfunc(a) func(return ((a) | beginAnd);)
 #define arg(n) (state.code[state.loc+2+n])
-#define numarg(n) (((arg(n) & beginAnd) ? arg(n) : state.vars[state.varsLoc+arg(n)]) | beginAnd)
+#define vararg(n) (state.vars[state.varsLoc+arg(n)])
+#define lsarg(n) state.lists[vararg(n)]
+#define numarg(n) (((arg(n) & beginAnd) ? arg(n) :  vararg(n)) & endAnd)
+#define listfunc(a) func(std::vector<unsigned> ls; a; state.lists.push_back(ls); return (unsigned)state.lists.size()-1;)
 
 const std::vector<unsigned(*)(State&)> builtins { //TODO more of these
 	numEfunc(numarg(0)+numarg(1)), // +
@@ -70,9 +75,35 @@ const std::vector<unsigned(*)(State&)> builtins { //TODO more of these
 	numEfunc(~(numarg(0)|numarg(1))), // b!||
 	numEfunc(numarg(0)^numarg(1)), // bxor
 	numEfunc(~(numarg(0)^numarg(1))), // bxnor
+	listfunc(
+		for (int i=0; arg(i); i++)
+			ls.push_back(arg(i));
+	), // ls
+	listfunc(
+		std::vector<unsigned> l;
+		for (int i=0; arg(i); i++)
+			l.push_back(arg(i));
+		state.lists.push_back(l);
+		ls.push_back((unsigned) state.lists.size()-1);
+	), // ls2D
+	listfunc(
+		int i = 0;
+		for (; arg(i+1); i++)
+			ls.insert(ls.begin(), arg(i));
+		ls.insert(ls.end(),lsarg(i).begin(),lsarg(i).end());
+	), // {...}:last
+	listfunc(
+		ls.insert(ls.begin(),lsarg(0).begin(),lsarg(0).end());
+		for (int i=1; arg(i); i++)
+			ls.insert(ls.end(), arg(i));
+	), // first:{...}
+	efunc(lsarg(0)[numarg(1)]), // get
+	listfunc(
+		ls.insert(ls.begin(),lsarg(0).begin(),lsarg(0).end());
+		ls[numarg(1) & endAnd] = arg(2);
+	), // set
+	efunc((unsigned)lsarg(0).size()) // size
 };
-
-const unsigned maxNumArgs = 8;
 
 void runIO(unsigned io, State& state) {
 	std::cout << "AAA" << (io & endAnd) << std::endl; //TODO
@@ -97,10 +128,8 @@ bool mainLoop(State& state) {
 		if (start == 0)
 			cmd = state.vars[state.varsLoc+cmd-1];
 		unsigned result = cmd;
-
 		if (start == 0x40000000) //builtin func
 			result = builtins[end](state);
-
 		if (start == 0x80000000) { //ptr func
 			state.stack.push_back({state.loc,state.varsSize,state.varsLoc,varNum});
 			state.varsLoc += state.varsSize;
@@ -115,7 +144,7 @@ bool mainLoop(State& state) {
 			} else { //return
 				StackItem s;
 				while (s.varNum != 0) s = pop(state.stack);
-				if (s.loc != (unsigned)-1) { //hit the bottom
+				if (s.loc == (unsigned)-1) { //hit the bottom
 					state.inMainIO = true;
 					state.stack.push_back(s);
 					state.mainIO.push_back(result);
