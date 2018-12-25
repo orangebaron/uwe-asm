@@ -34,18 +34,43 @@ Which translates to:
 
 ### Built-In Function List
 
-| Number | Name | Notes/Exceptions |
+| Number | Name | Function | Notes/Exceptions |
 |:-:|:-:|:-:|
-| 0 | Add | If only a single argument is given, returns `arg+1` |
-| 1 | Subtract | If only a single argument is given, returns `0-arg` |
-| 2... | .... | ... *TODO* |
-| n | ls | Creates a list of `[arg 1, arg 2, ...]` |
-| n+1 | ls2D | Creates `[[arg 1, arg 2, ...]]` |
-| n+2 | insert | Returns `[arg 1, ...second-to-last arg]++(last arg, a list)` |
-| n+3 | append | Returns `(arg 1, a list)++[arg 2, arg 3, ...]` |
-| n+4 | get | Gets `(arg 1, a list)[arg 2]` |
-| n+5 | set | Arg 1, a list, but with element (arg 2) set to (arg 3) |
-| n+6 | size | Returns the size of arg |
+| 0 | add | Add + | If only a single argument is given, returns `arg+1` |
+| 1 | sub | Subtract - | If only a single argument is given, returns `0-arg` |
+| 2 | eq | Equals == | |
+| 3 | neq | Not equals != | |
+| 4 | gt | Greater than > -- signed | Assumes signed ints |
+| 5 | lt | Less than < -- signed | Assumes signed ints |
+| 6 | gteq | Greater than or equal >= -- signed | Assumes signed ints |
+| 7 | lteq | Less than or equal <= -- signed | Assumes signed ints |
+| 8 | gtu | Greater than > -- unsigned | Assumes unsigned ints |
+| 9 | ltu | Less than < -- unsigned | Assumes unsigned ints |
+| 10 | gtequ | Greater than or equal >= -- unsigned | Assumes unsigned ints |
+| 11 | ltequ | Less than or equal <= -- unsigned | Assumes unsigned ints |
+| 12 | lsh | Left shift << | |
+| 13 | rsh | Right shift >> | |
+| 14 | not | Boolean not ! | |
+| 15 | and | Boolean and && | |
+| 16 | or | Boolean or \|\| | |
+| 17 | xor | Boolean xor ^^ | |
+| 18 | nand | Boolean nand !&& | |
+| 19 | nor | Boolean nor !\|\| | |
+| 20 | xnor | Boolean xnor !^ | |
+| 21 | bnot | Bitwise not ! | |
+| 22 | band | Bitwise and & | |
+| 23 | bor | Bitwise or \| | |
+| 24 | bxor | Bitwise xor ^ | |
+| 25 | bnand | Bitwise nand !&&TODO bitwise sybols | |
+| 26 | bnor | Bitwise nor !\| | |
+| 27 | bxnor | Bitwise xnor !^ | |
+| 28 | ls | Creates a list of `[arg 1, arg 2, ...]` | |
+| 29 | ls2d | Creates `[[arg 1, arg 2, ...]]` | |
+| 30 | insert | Returns `[arg 1, ...second-to-last arg]++(last arg, a list)` | |
+| 31 | append | Returns `(arg 1, a list)++[arg 2, arg 3, ...]` | |
+| 32 | get | Gets `(arg 1, a list)[arg 2]` | |
+| 33 | set | Arg 1, a list, but with element (arg 2) set to (arg 3) | |
+| 34 | size | Returns the size of arg | |
 
 ### Explanation of IO
 

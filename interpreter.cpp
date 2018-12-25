@@ -47,33 +47,33 @@ const unsigned endAnd = 0x3FFFFFFF;
 #define listfunc(a) func(std::vector<unsigned> ls; a; state.lists.push_back(ls); return (unsigned)state.lists.size()-1;)
 
 const std::vector<unsigned(*)(State&)> builtins { //TODO more of these
-	numEfunc(numarg(0)+numarg(1)), // +
-	numEfunc(numarg(0)-numarg(1)), // -
-	numEfunc(numarg(0)==numarg(1)), // ==
-	numEfunc(numarg(0)!=numarg(1)), // !=
-	numEfunc((int)numarg(0)>(int)numarg(1)), // >
-	numEfunc((int)numarg(0)<(int)numarg(1)), // <
-	numEfunc((int)numarg(0)>=(int)numarg(1)), // >=
-	numEfunc((int)numarg(0)<=(int)numarg(1)), // <=
-	numEfunc(numarg(0)>numarg(1)), // > u
-	numEfunc(numarg(0)<numarg(1)), // < u
-	numEfunc(numarg(0)>=numarg(1)), // >= u
-	numEfunc(numarg(0)<=numarg(1)), // <= u
-	numEfunc(numarg(0)>>numarg(1)), // >>
-	numEfunc(numarg(0)<<numarg(1)), // <<
-	efunc((unsigned)!numarg(0)), // !
-	numEfunc(numarg(0)&&numarg(1)), // &&
-	numEfunc(numarg(0)||numarg(1)), // ||
-	numEfunc(!(numarg(0)&&numarg(1))), // !&&
-	numEfunc(!(numarg(0)||numarg(1))), // !||
+	numEfunc(numarg(0)+numarg(1)), // add
+	numEfunc(numarg(0)-numarg(1)), // sub
+	numEfunc(numarg(0)==numarg(1)), // eq
+	numEfunc(numarg(0)!=numarg(1)), // neq
+	numEfunc((int)numarg(0)>(int)numarg(1)), // gt
+	numEfunc((int)numarg(0)<(int)numarg(1)), // lt
+	numEfunc((int)numarg(0)>=(int)numarg(1)), // gteq
+	numEfunc((int)numarg(0)<=(int)numarg(1)), // lteq
+	numEfunc(numarg(0)>numarg(1)), // gtu
+	numEfunc(numarg(0)<numarg(1)), // ltu
+	numEfunc(numarg(0)>=numarg(1)), // gtequ
+	numEfunc(numarg(0)<=numarg(1)), // ltequ
+	numEfunc(numarg(0)<<numarg(1)), // lsh
+	numEfunc(numarg(0)>>numarg(1)), // rsh
+	efunc((unsigned)!numarg(0)), // not
+	numEfunc(numarg(0)&&numarg(1)), // and
+	numEfunc(numarg(0)||numarg(1)), // or
 	numEfunc((bool)numarg(0)!=(bool)numarg(1)), // xor
+	numEfunc(!(numarg(0)&&numarg(1))), // nand
+	numEfunc(!(numarg(0)||numarg(1))), // nor
 	numEfunc((bool)numarg(0)==(bool)numarg(1)), // xnor
-	efunc(~numarg(0)), // b!
-	numEfunc(numarg(0)&numarg(1)), // b&&
-	numEfunc(numarg(0)|numarg(1)), // b||
-	numEfunc(~(numarg(0)&numarg(1))), // b!&&
-	numEfunc(~(numarg(0)|numarg(1))), // b!||
+	efunc(~numarg(0)), // bnot
+	numEfunc(numarg(0)&numarg(1)), // band
+	numEfunc(numarg(0)|numarg(1)), // bor
 	numEfunc(numarg(0)^numarg(1)), // bxor
+	numEfunc(~(numarg(0)&numarg(1))), // bnand
+	numEfunc(~(numarg(0)|numarg(1))), // bnor
 	numEfunc(~(numarg(0)^numarg(1))), // bxnor
 	listfunc(
 		for (int i=0; arg(i); i++)
@@ -85,18 +85,18 @@ const std::vector<unsigned(*)(State&)> builtins { //TODO more of these
 			l.push_back(arg(i));
 		state.lists.push_back(l);
 		ls.push_back((unsigned) state.lists.size()-1);
-	), // ls2D
+	), // ls2d
 	listfunc(
 		int i = 0;
 		for (; arg(i+1); i++)
 			ls.insert(ls.begin(), arg(i));
 		ls.insert(ls.end(),lsarg(i).begin(),lsarg(i).end());
-	), // {...}:last
+	), // insert
 	listfunc(
 		ls.insert(ls.begin(),lsarg(0).begin(),lsarg(0).end());
 		for (int i=1; arg(i); i++)
 			ls.insert(ls.end(), arg(i));
-	), // first:{...}
+	), // append
 	efunc(lsarg(0)[numarg(1)]), // get
 	listfunc(
 		ls.insert(ls.begin(),lsarg(0).begin(),lsarg(0).end());
@@ -161,7 +161,7 @@ bool mainLoop(State& state) {
 }
 
 int main() {
-	auto s = State({0,0x40000000,0xC0000003,0xC0000007,0});
+	auto s = State({1,0x40000000,0xC0000003,0xC0000007,0,0,1,0});
 	while(mainLoop(s));
 	return 0;
 }
