@@ -35,11 +35,11 @@ Which translates to:
 ### Built-In Function List
 
 | Number | Name | Function | Notes/Exceptions |
-|:-:|:-:|:-:|
+|:-:|:-:|:-:|:-:|
 | 0 | add | Add + | If only a single argument is given, returns `arg+1` |
 | 1 | sub | Subtract - | If only a single argument is given, returns `0-arg` |
-| 2 | eq | Equals == | |
-| 3 | neq | Not equals != | |
+| 2 | eq | Equals == |  |
+| 3 | neq | Not equals != |  |
 | 4 | gt | Greater than > -- signed | Assumes signed ints |
 | 5 | lt | Less than < -- signed | Assumes signed ints |
 | 6 | gteq | Greater than or equal >= -- signed | Assumes signed ints |
