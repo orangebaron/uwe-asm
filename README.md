@@ -61,7 +61,7 @@ Which translates to:
 | 22 | band | Bitwise and & | |
 | 23 | bor | Bitwise or \| | |
 | 24 | bxor | Bitwise xor ^ | |
-| 25 | bnand | Bitwise nand !&&TODO bitwise sybols | |
+| 25 | bnand | Bitwise nand !& | |
 | 26 | bnor | Bitwise nor !\| | |
 | 27 | bxnor | Bitwise xnor !^ | |
 | 28 | ls | Creates a list of `[arg 1, arg 2, ...]` | |
