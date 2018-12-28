@@ -49,8 +49,20 @@ namespace UweAsm { namespace Interpreter {
 	#define listfunc(a) func(std::vector<unsigned> ls; a; state.lists.push_back(ls); return (unsigned)state.lists.size()-1;)
 
 	const std::vector<unsigned(*)(State&)> builtins { //TODO more of these
-		numEfunc(numarg(0)+numarg(1)), // add
-		numEfunc(numarg(0)-numarg(1)), // sub
+		func(
+			unsigned total = 0;
+			unsigned numArgs = 0;
+			for (; arg(numArgs); numArgs++)
+				total += numarg(numArgs);
+			return (total+(numArgs==1?1:0)) | beginAnd;
+		), // add
+		func(
+			unsigned total = numarg(0);
+			unsigned numArgs = 1;
+			for (; arg(numArgs); numArgs++)
+				total -= numarg(numArgs);
+			return (total-(numArgs==1?1:0)) | beginAnd;
+		), // sub
 		numEfunc(numarg(0)==numarg(1)), // eq
 		numEfunc(numarg(0)!=numarg(1)), // neq
 		numEfunc((int)numarg(0)>(int)numarg(1)), // gt
@@ -108,7 +120,7 @@ namespace UweAsm { namespace Interpreter {
 	};
 
 	void runIO(unsigned io, State& state) {
-		std::cout << std::hex << (io & endAnd) << std::endl; //TODO
+		std::cout << std::hex << io << std::endl; //TODO
 	}
 
 	void setVar(unsigned num, unsigned val, State& state) {
